@@ -1,0 +1,41 @@
+#!/usr/bin/env php
+<?php
+/**
+ * Dump database into the database folder replacing the vagrant.sql dump
+ * @author Jonathan Bardo <jonathan.bardo@x-team.com>
+ * @author Weston Ruter <weston@x-team.com>
+ */
+$start_time = microtime(true);
+$basepath = rtrim(realpath(dirname(__FILE__) . '/..'), '/');
+
+include $basepath . '/sites/vdd/settings.php';
+
+$mysql_info = $databases['default']['default'];
+
+// Drop database before adding it again to prevent conflict
+$cmd = sprintf(
+	'drush cc all && mysqldump --databases %3$s --add-drop-database -u%1$s -p%2$s %3$s > %4$s/database/vagrant.sql', 
+	$mysql_info['username'],
+	$mysql_info['password'], 
+	$mysql_info['database'], 
+	$basepath
+);
+
+@exec($cmd . ' 2>&1', $output, $exit_code);
+
+if($exit_code){
+	cli_die("Unable to dump data", 3);
+} else  {
+	printf("Dump complete (took %.02f seconds)\n", round(microtime(true) - $start_time, 2));
+}
+
+/**
+ * PHP's die() function doesn't output to STDERR and it doesn't exit the program
+ * with an error exit code. Fix this.
+ * @param {string} $msg
+ * @param {int} $exit_code
+ */
+function cli_die($msg, $exit_code = 1){
+	fwrite(STDERR, rtrim($msg) . "\n");
+	exit($exit_code);
+}

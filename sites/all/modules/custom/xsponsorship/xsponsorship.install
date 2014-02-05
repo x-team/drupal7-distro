@@ -1,0 +1,52 @@
+<?php
+
+/**
+ * @file xsponsorship.install
+ * Contains install and update functions for Sponsorship module.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function xsponsorship_schema() {
+  $schema = array();
+  $schema['xsponsorship'] = array(
+    'description' => 'Stores sponsorship data.',
+    'fields' => array(
+      'bid' => array(
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => "The block's {block}.bid.",
+      ),
+      'type' => array(
+        'type' => 'text',
+        'not null' => TRUE,
+        'description' => 'Ad Type.',
+      ),
+      'info' => array(
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'Block description.',
+      ),
+    ),
+    'unique keys' => array(
+      'info' => array('info'),
+    ),
+    'indexes' => array(
+      // 'fid' => array('fid'),
+    ),
+    'primary key' => array('bid'),
+  );
+  
+  return $schema;
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function xsponsorship_uninstall() {
+
+}

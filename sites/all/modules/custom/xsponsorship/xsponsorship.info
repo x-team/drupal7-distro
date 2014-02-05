@@ -1,0 +1,3 @@
+name = "xSponsorship"
+description = Provides a way to insert ads in different places of a page.
+core = 7.x

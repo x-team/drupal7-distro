@@ -1,0 +1,194 @@
+<?php
+
+/**
+ * @file xsponsorship.module
+ * Primarily Drupal hooks.
+ */
+
+/**
+ * Implementation of hook_theme()
+ */
+function xsponsorship_theme() {
+  return array(
+    'xsponsorship_content' => array(
+      'render element' => 'elements',
+      'template' => 'xsponsorship-content',
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu().
+ */
+function xsponsorship_menu() {
+  $items['admin/structure/block/xsponsorship_add'] = array(
+    'title' => 'Add advertisement',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('xsponsorship_add_block_form'),
+    'access arguments' => array('administer blocks'),
+    'file' => 'xsponsorship.admin.inc',
+    'type' => MENU_LOCAL_ACTION,
+  );
+  $items['admin/structure/block/xsponsorship_configure'] = array(
+    'title' => 'Sponsorship block settings',
+    'description' => 'Configure Sponsorship block settings.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('xsponsorship_admin_settings_form'),
+    'access arguments' => array('administer site configuration'),
+    'file' => 'xsponsorship.admin.inc',
+  );
+  $items['admin/structure/block/manage/xsponsorship/%/delete'] = array(
+    'title' => 'Delete block',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('xsponsorship_custom_block_delete', 5),
+    'access arguments' => array('administer blocks'),
+    'type' => MENU_CALLBACK,
+    'file' => 'xsponsorship.admin.inc',
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function xsponsorship_block_info() {
+  $blocks = array();
+
+  $result = db_query('SELECT bid, info FROM {xsponsorship} ORDER BY info');
+  foreach ($result as $block) {
+    $blocks[$block->bid]['info'] = $block->info;
+    // Not worth caching.
+    $blocks[$block->bid]['cache'] = DRUPAL_NO_CACHE;
+  }
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_configure().
+ */
+function xsponsorship_block_configure($delta = '') {
+  if ($delta) {
+    $custom_block = block_xsponsorship_get($delta);
+  }
+  else {
+    $custom_block = array();
+  }
+  $form = block_custom_block_form($custom_block);
+  xsponsorship_configure_form($form, $custom_block);
+  return $form;
+}
+
+/**
+ * Implements hook_block_save().
+ */
+function xsponsorship_block_save($delta = '', $edit = array()) {
+  $data = array();
+  if (!empty($edit['xsponsorship_link'])) {
+    $data['xsponsorship_link'] = $edit['xsponsorship_link'];
+  }
+  if (!empty($edit['xsponsorship_link_target'])) {
+    $data['xsponsorship_link_target'] = $edit['xsponsorship_link_target'];
+  }
+  
+  db_update('xsponsorship')
+    ->fields(array(
+      'type' => $edit['type'],
+      'info' => $edit['info'],
+    ))
+    ->condition('bid', $delta)
+    ->execute();
+
+  return TRUE;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function xsponsorship_block_view($delta = '') {
+  $block = db_query('SELECT type, info FROM {xsponsorship} WHERE bid = :bid', array(':bid' => $delta))->fetchObject();
+  $data['subject'] = NULL;
+  $data['content'] = theme('xsponsorship_content', array('block' => $block));
+  return $data;
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function xsponsorship_form_alter(&$form, &$form_state, $form_id) {
+  if ($form_id == 'block_admin_configure') {
+    if ($form['module']['#value'] == 'xsponsorship') {
+      $form['#attributes']['enctype'] = 'multipart/form-data';
+    }
+  }
+  elseif ($form_id == 'block_admin_display_form') {
+    foreach ($form['blocks'] as $key => $element) {
+      if ($element['module']['#value'] == 'xsponsorship') {
+        $form['blocks'][$key]['delete'] = array(
+          '#type' => 'link',
+          '#title' => t('delete'),
+          '#href' => 'admin/structure/block/manage/xsponsorship/' . $element['delta']['#value'] . '/delete',
+       );
+      }
+    }
+  }
+}
+
+function xsponsorship_configure_form(&$form, $block = NULL) {
+  // $title = t('Image');
+  // $description = '';
+  // if (!empty($block['bid'])) {
+  //   $file = xsponsorship_get_file($block['bid']);
+  // }
+  
+  // // Do not require body as we can have an image as the body.
+  // $form['body_field']['body']['#required'] = FALSE;
+  
+  // $data = !empty($block['data']) ? unserialize($block['data']) : array();
+  
+  // $form['xsponsorship'] = array(
+  //   '#type' => 'file',
+  //   '#title' => $title,
+  //   '#description' => $description,
+  //   '#size' => 40,
+  //   '#weight' => isset($form['body_field']['#weight']) ? $form['body_field']['#weight'] - 0.7 : 0,
+  // );
+  
+  //   '#default_value' => isset($data['xsponsorship_link_target']) ? $data['xsponsorship_link_target'] : '_self',
+  //   '#weight' => isset($form['body_field']['#weight']) ? $form['body_field']['#weight'] - 0.2 : 0,
+  // );
+  
+}
+
+/**
+ * Process variables for xsponsorship-content.tpl.php.
+ *
+ * The $variables array contains the following arguments:
+ * - $block
+ *
+ * @see xsponsorship-content.tpl.php
+ */
+function template_preprocess_xsponsorship_content(&$variables) {
+  $variables['image'] = '';
+  $block = $variables['block'];
+  $data = !empty($block->data) ? unserialize($block->data) : array();
+
+  // $attributes = array('class' => array('xsponsorship-image'));
+  // $variables['path'] = $file->uri;
+  // $variables['attributes'] = $attributes;
+  // if (!empty($data['xsponsorship_alt'])) {
+  //   $variables['alt'] = $data['xsponsorship_alt'];
+  // }
+  // if (!empty($data['xsponsorship_title'])) {
+  //   $variables['title'] = $data['xsponsorship_title'];
+  // }
+  // if (!empty($data['xsponsorship_link'])) {
+  //   $attributes = array('class' => array('xsponsorship-link'));
+  //   if (!empty($data['xsponsorship_link_target'])) {
+  //     $attributes['target'] = $data['xsponsorship_link_target'];
+  //   }
+  //   $variables['image'] = l($variables['image'], $data['xsponsorship_link'], array('html' => TRUE, 'attributes' => $attributes));
+  // }
+
+  // $variables['content'] = check_markup($block->body, $block->format, '', TRUE);
+}
+

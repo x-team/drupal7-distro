@@ -108,7 +108,7 @@ function xsponsorship_custom_block_delete_submit($form, &$form_state) {
   db_delete('xsponsorship')
     ->condition('bid', $form_state['values']['bid'])
     ->execute();
-  db_delete('xsponsorship')
+  db_delete('block')
     ->condition('module', 'xsponsorship')
     ->condition('delta', $form_state['values']['bid'])
     ->execute();

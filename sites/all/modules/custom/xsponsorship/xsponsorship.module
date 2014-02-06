@@ -131,11 +131,6 @@ function xsponsorship_configure_form(&$form, $block = NULL) {
   // We don't want any body field.
   unset($form['body_field']);
 
-  // The info field is not required.
-  $form['info']['#required'] = FALSE;
-
-  $data = !empty($block['data']) ? unserialize($block['data']) : array();
-
   $form['xsponsorship_type'] = array(
     '#title' => t('Advertisement type'),
     '#type' => 'select',

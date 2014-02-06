@@ -137,9 +137,9 @@ function xsponsorship_configure_form(&$form, $block = NULL) {
     '#options' => array(
       'mrec' => t('MREC (300 X 250)'),
       'lrec' => t('LREC (728 X 90)'),
-      'lrec-small' => t('LREC-SMALL (300 X 50)'),
-      'small-banner' => t('SMALL-BANNER (972 X 92)'),
-      'big-banner' => t('BIG-BANNER (1336 X 120)'),
+      // 'lrec-small' => t('LREC-SMALL (300 X 50)'),
+      // 'small-banner' => t('SMALL-BANNER (972 X 92)'),
+      // 'big-banner' => t('BIG-BANNER (1336 X 120)'),
     ),
     '#description' => t('The type of the ad to use'),
     '#weight' => 0,

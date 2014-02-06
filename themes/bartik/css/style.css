@@ -295,6 +295,7 @@ ul.tips {
 #logo {
   float: left; /* LTR */
   padding: 15px 15px 15px 10px; /* LTR */
+  margin-top: 20px;
 }
 #name-and-slogan {
   float: left; /* LTR */

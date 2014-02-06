@@ -167,7 +167,6 @@ function block_xsponsorship_get($bid) {
  * @see xsponsorship-content.tpl.php
  */
 function template_preprocess_xsponsorship_content(&$variables) {
-  $variables['image'] = '';
-  $block = $variables['block'];
+  $variables['adtype'] = $variables['block']->type;
 }
 

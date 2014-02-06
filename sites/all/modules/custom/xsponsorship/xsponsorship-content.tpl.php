@@ -40,8 +40,8 @@
 		),
 	);
 
-	$ad_width = $types[$content]['width'];
-	$ad_height = $types[$content]['height'];
+	$ad_width = $types[$adtype]['width'];
+	$ad_height = $types[$adtype]['height'];
 
 	$type = 'idol_bts_site_chats';
 
@@ -65,8 +65,6 @@
     <iframe src="http://FDM_AI.v.fwmrm.net/ad/g/1?nw=116457&amp;pvrn=123456789&amp;csid={{ adCsid.default }}&amp;resp=ad;;ptgt=s&amp;envp=g_iframe&amp;slid={{ type }}&amp;w=<?php echo $ad_width; ?>&amp;h=<?php echo $ad_height; ?>" width="<?php echo $ad_width; ?>" height="<?php echo $ad_height; ?>" border="0" marginwidth="0" marginheight="0" frameborder="0" scrolling="no"></iframe>
 </noscript>
 
-<?php if ($content): ?>
-  <div class="block-body">
-    <?php print $content ?>
-  </div>
-<?php endif; ?>
+<div class="block-body">
+  <?php print 'hello'; ?>
+</div>

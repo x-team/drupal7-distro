@@ -518,7 +518,7 @@ function logintoboggan_user_register_submit($form, &$form_state) {
     // Create new user account, administrator approval required.
     $mailkey = 'register_pending_approval';
 
-    $message = t('Thank you for applying for an account. Your account is currently pending approval by the site administrator.<br />Once it has been approved, you will receive an e-mail containing further instructions.');
+    $message = t("Your as been created and you are now successfully logged in.");
   }
 
   // Mail the user.
@@ -1252,7 +1252,7 @@ function theme_lt_login_link($variables) {
  *   A user object representing the user being logged in.
  */
 function theme_lt_login_successful_message($variables) {
-  return t('Log in successful for %name.', array('%name' => format_username($variables['account'])));
+  return '';
 }
 
 /**

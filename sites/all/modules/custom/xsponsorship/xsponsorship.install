@@ -19,17 +19,17 @@ function xsponsorship_schema() {
         'not null' => TRUE,
         'description' => "The block's {block}.bid.",
       ),
-      'type' => array(
-        'type' => 'text',
-        'not null' => TRUE,
-        'description' => 'Ad Type.',
-      ),
       'info' => array(
         'type' => 'varchar',
         'length' => 128,
         'not null' => TRUE,
         'default' => '',
         'description' => 'Block description.',
+      ),
+      'type' => array(
+        'type' => 'text',
+        'not null' => TRUE,
+        'description' => 'Ad Type.',
       ),
     ),
     'unique keys' => array(
@@ -40,7 +40,7 @@ function xsponsorship_schema() {
     ),
     'primary key' => array('bid'),
   );
-  
+
   return $schema;
 }
 

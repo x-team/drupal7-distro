@@ -11,6 +11,8 @@ function xsponsorship_add_block_form() {
   module_load_include('inc', 'block', 'block.admin');
   $form = array();
   $form = block_admin_configure($form, $form_state, 'xsponsorship', NULL);
+  unset($form['settings']['body_field']);
+//  dpm($form);
   return $form;
 }
 
@@ -25,9 +27,8 @@ function xsponsorship_add_block_form() {
 function xsponsorship_add_block_form_submit($form, &$form_state) {
   $delta = db_insert('xsponsorship')
     ->fields(array(
-      'body' => $form_state['values']['body']['value'],
       'info' => $form_state['values']['info'],
-      'format' => $form_state['values']['body']['format'],
+      'type' => $form_state['values']['xsponsorship_type'],
     ))
     ->execute();
   // Store block delta to allow other modules to work with new block.
@@ -76,7 +77,7 @@ function xsponsorship_add_block_form_submit($form, &$form_state) {
 
   xsponsorship_block_save($delta, $form_state['values']);
 
-  drupal_set_message(t('The image block has been created.'));
+  drupal_set_message(t('The advertisement block has been created.'));
   cache_clear_all();
   $form_state['redirect'] = 'admin/structure/block';
 }
@@ -95,7 +96,7 @@ function xsponsorship_custom_block_delete($form, &$form_state, $delta) {
   $form['info'] = array('#type' => 'hidden', '#value' => $custom_block['info'] ? $custom_block['info'] : 'Default info');
   $form['bid'] = array('#type' => 'hidden', '#value' => $block->delta);
 
-  return confirm_form($form, t('Are you sure you want to delete the image block %name?', array('%name' => $custom_block['info'])), 'admin/structure/block', '', t('Delete'), t('Cancel'));
+  return confirm_form($form, t('Are you sure you want to delete the advertisement block %name?', array('%name' => $custom_block['info'])), 'admin/structure/block', '', t('Delete'), t('Cancel'));
 }
 
 /**
@@ -116,7 +117,7 @@ function xsponsorship_custom_block_delete_submit($form, &$form_state) {
     ->condition('delta', $form_state['values']['bid'])
     ->execute();
   
-  drupal_set_message(t('The image block %name has been removed.', array('%name' => $form_state['values']['info'])));
+  drupal_set_message(t('The advertisement block %name has been removed.', array('%name' => $form_state['values']['info'])));
   cache_clear_all();
   $form_state['redirect'] = 'admin/structure/block';
   return;

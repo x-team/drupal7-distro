@@ -134,28 +134,74 @@ function xsponsorship_form_alter(&$form, &$form_state, $form_id) {
 }
 
 function xsponsorship_configure_form(&$form, $block = NULL) {
-  // $title = t('Image');
-  // $description = '';
-  // if (!empty($block['bid'])) {
-  //   $file = xsponsorship_get_file($block['bid']);
-  // }
+  $title = t('Image');
+  $description = '';
+
+  // Do not require body as we can have an image as the body.
+  $form['body_field']['body']['#required'] = FALSE;
   
-  // // Do not require body as we can have an image as the body.
-  // $form['body_field']['body']['#required'] = FALSE;
+  $data = !empty($block['data']) ? unserialize($block['data']) : array();
   
-  // $data = !empty($block['data']) ? unserialize($block['data']) : array();
-  
-  // $form['xsponsorship'] = array(
-  //   '#type' => 'file',
-  //   '#title' => $title,
-  //   '#description' => $description,
+  $form['xsponsorship'] = array(
+    '#type' => 'file',
+    '#title' => $title,
+    '#description' => $description,
+    '#size' => 40,
+    '#weight' => isset($form['body_field']['#weight']) ? $form['body_field']['#weight'] - 0.7 : 0,
+  );
+  $form['xsponsorship_alt'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Alternate text'),
+    '#description' => t('This text will be used by screen readers, search engines, or when the image cannot be loaded.'),
+    '#size' => 40,
+    '#default_value' => isset($data['xsponsorship_alt']) ? $data['xsponsorship_alt'] : '',
+    '#weight' => isset($form['body_field']['#weight']) ? $form['body_field']['#weight'] - 0.5 : 0,
+  );
+  // // $form['xsponsorship_title'] = array(
+  //   '#type' => 'textfield',
+  //   '#title' => t('Title'),
+  //   '#description' => t('The title is used as a tool tip when the user hovers the mouse over the image.'),
   //   '#size' => 40,
-  //   '#weight' => isset($form['body_field']['#weight']) ? $form['body_field']['#weight'] - 0.7 : 0,
+  //   '#default_value' => isset($data['xsponsorship_title']) ? $data['xsponsorship_title'] : '',
+  //   '#weight' => isset($form['body_field']['#weight']) ? $form['body_field']['#weight'] - 0.4 : 0,
   // );
-  
+  // $form['xsponsorship_link'] = array(
+  //   '#type' => 'textfield',
+  //   '#title' => t('Link'),
+  //   '#description' => t('Leave empty for no link.'),
+  //   '#size' => 40,
+  //   '#default_value' => isset($data['xsponsorship_link']) ? $data['xsponsorship_link'] : '',
+  //   '#weight' => isset($form['body_field']['#weight']) ? $form['body_field']['#weight'] - 0.3 : 0,
+  // );
+  // $form['xsponsorship_link_target'] = array(
+  //   '#type' => 'select',
+  //   '#title' => t('Link target'),
+  //   '#description' => t('Leave empty for no link.'),
+  //   '#options' => array(
+  //     '_blank' => '_blank',
+  //     '_parent' => '_parent',
+  //     '_self' => '_self',
+  //     '_top' => '_top',
+  //   ),
   //   '#default_value' => isset($data['xsponsorship_link_target']) ? $data['xsponsorship_link_target'] : '_self',
   //   '#weight' => isset($form['body_field']['#weight']) ? $form['body_field']['#weight'] - 0.2 : 0,
   // );
+  
+  // if (module_exists('image')) {
+  //   $options = array();
+  //   foreach (image_styles() as $key => $preset) {
+  //     $options[$key] = $preset['name'];
+  //   }
+  //   if (!empty($options)) {
+  //     $form['xsponsorship_imagecache'] = array(
+  //       '#type' => 'select',
+  //       '#title' => t('Image style'),
+  //       '#options' => array('' => t('<none>')) + $options,
+  //       '#default_value' => isset($data['xsponsorship_imagecache']) ? $data['xsponsorship_imagecache'] : '',
+  //       '#weight' => isset($form['body_field']['#weight']) ? $form['body_field']['#weight'] - 0.6 : 0,
+  //     );
+  //   }
+  // }
   
 }
 

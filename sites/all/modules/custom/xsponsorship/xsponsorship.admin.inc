@@ -104,13 +104,6 @@ function xsponsorship_custom_block_delete($form, &$form_state, $delta) {
  * @see xsponsorship_custom_block_delete()
  */
 function xsponsorship_custom_block_delete_submit($form, &$form_state) {
-  // If there is a file, delete it.
-  $file = xsponsorship_get_file($form_state['values']['bid']);
-  if (!empty($file->fid)) {
-    file_usage_delete($file, 'xsponsorship', 'xsponsorship', $form_state['values']['bid']);
-    file_delete($file);
-  }
-  
   db_delete('xsponsorship')
     ->condition('bid', $form_state['values']['bid'])
     ->execute();

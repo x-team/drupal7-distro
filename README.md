@@ -26,3 +26,5 @@ Getting Started
 * Start your virtual machine : `vagrant up --provision`
 
 You should now be able to access the following url : `http://vdd/drupal7/`
+
+Maintained by the [developers at x-team](https://www.x-team.com) | [developer blog](https://www.x-team.com/blog/)
